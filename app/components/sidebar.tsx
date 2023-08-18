@@ -29,6 +29,8 @@ import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
 
+import { SignOutButton } from "@clerk/nextjs";
+
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
@@ -126,6 +128,16 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
+      </div>
+
+      <div className={styles["sidebar-header"]}>
+        <SignOutButton>
+          <IconButton
+            text={"Sign Out"}
+            className={styles["sidebar-bar-button"]}
+            shadow
+          />
+        </SignOutButton>
       </div>
 
       <div className={styles["sidebar-header-bar"]}>

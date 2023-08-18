@@ -3,7 +3,7 @@
 require("../polyfill");
 
 import { useState, useEffect } from "react";
-
+import axios from "axios";
 import styles from "./home.module.scss";
 
 import BotIcon from "../icons/bot.svg";
@@ -30,6 +30,8 @@ import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
 
+import { useAuth } from "@clerk/nextjs";
+
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={styles["loading-content"] + " no-dark"}>
@@ -54,6 +56,8 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
+
+import User from "../model/user";
 
 export function useSwitchTheme() {
   const config = useAppConfig();
@@ -123,12 +127,32 @@ function Screen() {
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
-  const isAuth = location.pathname === Path.Auth;
+  // const isAuth = true;
+  // const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
+
+  const [query, useQuery] = useState(3);
+
+  const { isLoaded, userId, sessionId, getToken } = useAuth();
+
+  const agentData = {
+    userId,
+    query,
+  };
 
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
+
+  const fetchData = async () => {
+    const response = await axios.post("/api", agentData);
+    const newData = response.data;
+  };
+  useEffect(() => {
+    if (agentData && agentData.userId && agentData.query) {
+      fetchData();
+    }
+  }, [agentData]);
 
   return (
     <div
@@ -141,7 +165,7 @@ function Screen() {
         } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
       }
     >
-      {isAuth ? (
+      {!isLoaded || !userId ? (
         <>
           <AuthPage />
         </>
