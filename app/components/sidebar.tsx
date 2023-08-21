@@ -29,6 +29,8 @@ import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
 
+import axios from "axios";
+import { useAuth } from "@clerk/nextjs";
 import { SignOutButton } from "@clerk/nextjs";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
@@ -111,6 +113,40 @@ export function SideBar(props: { className?: string }) {
   const config = useAppConfig();
 
   useHotKey();
+
+  const { isLoaded, userId, sessionId, getToken } = useAuth();
+
+  const orderfunction = async () => {
+    const resdata = await axios.get("/api");
+    const newData = resdata.data.data;
+
+    let queryCount;
+
+    // const data = await getData(userId);
+    await newData.forEach((id: any) => {
+      if (id.userId == userId) {
+        queryCount = id.query - 1;
+      }
+    });
+
+    const agentdata = {
+      userId,
+      query: queryCount,
+    };
+    await axios.post("/api/query", agentdata);
+
+    console.log("11111111111111", queryCount, userId);
+
+    if (queryCount !== undefined && queryCount > 0) {
+      if (config.dontShowMaskSplashScreen) {
+        chatStore.newSession();
+        navigate(Path.Chat);
+      } else {
+        navigate(Path.NewChat);
+      }
+    } else {
+    }
+  };
 
   return (
     <div
@@ -196,12 +232,7 @@ export function SideBar(props: { className?: string }) {
             icon={<AddIcon />}
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
             onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                navigate(Path.Chat);
-              } else {
-                navigate(Path.NewChat);
-              }
+              orderfunction();
             }}
             shadow
           />

@@ -131,7 +131,7 @@ function Screen() {
   // const isAuth = location.pathname === Path.Auth;
   const isMobileScreen = useMobileScreen();
 
-  const [query, useQuery] = useState(3);
+  const [query, useQuery] = useState(2);
 
   const { isLoaded, userId, sessionId, getToken } = useAuth();
 
