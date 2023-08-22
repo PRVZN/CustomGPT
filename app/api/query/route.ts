@@ -1,26 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createData, getData } from "./user";
-export async function GET() {
-  const data = await getData();
-
-  let json_response = {
-    data: data,
-    status: "success",
-  };
-  return NextResponse.json(json_response);
-}
+import { updateData, getData } from "../user";
 
 export async function POST(request: NextRequest) {
   const { userId, query, userEmail } = await request.json();
 
-  const newData = {
+  await updateData({
     userId: String(userId),
     query: Number(query),
     userEmail: String(userEmail),
-  };
-
-  await createData(newData);
+  });
   let json_response = {
     status: "success",
   };

@@ -1,17 +1,32 @@
 import User from "./userschema";
 import dbConnect from "./dbConnect";
+import { NextRequest, NextResponse } from "next/server";
 export async function getData() {
   // Fetch all data from the collection
-  const data = await User.find({});
+  await dbConnect();
+  const result = await User.find({});
 
-  return data;
+  return result;
 }
 
 export async function createData(newData: any) {
   // Create a new instance of the Data model and save it to the database
   await dbConnect();
   const data = new User(newData);
-  await data.save();
+  if (await User.findOne({ userId: data.userId })) {
+  } else {
+    await data.save();
+  }
 
   return data;
+}
+
+export async function updateData(newData: any) {
+  await dbConnect();
+  const data = new User(newData);
+  await User.updateOne(
+    { userEmail: data.userEmail },
+    { userId: data.userId },
+    { $set: { query: data.query } },
+  );
 }

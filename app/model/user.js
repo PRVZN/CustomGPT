@@ -5,6 +5,7 @@ const UserSchema = new Schema(
   {
     userId: { type: String, required: true },
     query: { type: Number },
+    userEmail: { type: String },
   },
   { timestamps: true },
 );

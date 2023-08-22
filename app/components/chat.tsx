@@ -63,6 +63,7 @@ import Locale from "../locales";
 
 import { IconButton } from "./button";
 import styles from "./chat.module.scss";
+import stylesmodal from "./stripeModal.module.scss";
 
 import {
   List,
@@ -88,6 +89,12 @@ import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
+import axios from "axios";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { useAuth } from "@clerk/nextjs";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -598,6 +605,176 @@ export function EditMessageModal(props: { onClose: () => void }) {
   );
 }
 
+function App(flag: any) {
+  return <div>{flag === "1" ? toast("Wow so easy!") : null}</div>;
+}
+
+export function StripeSubModal(props: { onClose: () => void }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const [messages, setMessages] = useState(session.messages.slice());
+
+  const pay = (type: any) => {
+    axios
+      .post("/api/subscription", { type: type })
+      .then((res) => {
+        return (window.location = res.data.data);
+      })
+      .catch((err) => {});
+  };
+
+  const navigate = useNavigate();
+
+  const config = useAppConfig();
+  // const NewChat = dynamic(async () => (await import("./new-chat")).NewChat);
+  const { isLoaded, userId, sessionId, getToken } = useAuth();
+
+  const orderfunction = async () => {
+    const response = await axios.get("/api");
+    const newData = response.data.data;
+
+    let queryCount;
+
+    // const data = await getData(userId);
+    await newData.forEach((id: any) => {
+      if (id.userId == userId) {
+        queryCount = id.query;
+      }
+    });
+
+    if (queryCount !== undefined && queryCount > 0) {
+      if (config.dontShowMaskSplashScreen) {
+        chatStore.newSession();
+        navigate(Path.Chat);
+      } else {
+        navigate(Path.NewChat);
+      }
+    } else {
+      App("1");
+    }
+  };
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title="Upgrade Plan"
+        onClose={props.onClose}
+        actions={[
+          <IconButton
+            text={Locale.UI.Cancel}
+            icon={<CancelIcon />}
+            key="cancel"
+            onClick={() => {
+              props.onClose();
+            }}
+          />,
+          <IconButton
+            type="primary"
+            text={Locale.UI.Confirm}
+            icon={<ConfirmIcon />}
+            key="ok"
+            onClick={() => {
+              chatStore.updateCurrentSession(
+                (session) => (session.messages = messages),
+              );
+              props.onClose();
+            }}
+          />,
+        ]}
+      >
+        <div className={stylesmodal["container"]}>
+          <div className={stylesmodal["pricing__table"]}>
+            <div className={stylesmodal["icon type-01"]}>
+              <span
+                className={stylesmodal["fa fa-paper-plane"]}
+                aria-hidden="true"
+              ></span>
+            </div>
+            <h3 className={stylesmodal["heading"]}>Plus</h3>
+            <h1 className={stylesmodal["service__price"]}>
+              <sup className={stylesmodal["dollar__sign"]}>$5</sup>
+              <sup className={stylesmodal["service__period"]}>Per Month</sup>
+            </h1>
+
+            <ul className={stylesmodal["features__list"]}>
+              <li>Available Anytime</li>
+              <li>300 Queries</li>
+              <li>Unlimited Prompts</li>
+              <li>Priority Support</li>
+            </ul>
+            <button
+              className={stylesmodal["order__button"]}
+              onClick={() => {
+                pay("1");
+              }}
+            >
+              Get Started
+            </button>
+          </div>
+
+          <div className={stylesmodal["pricing__table"]}>
+            <div className={stylesmodal["icon type-02"]}>
+              <span
+                className={stylesmodal["fa fa-plane"]}
+                aria-hidden="true"
+              ></span>
+            </div>
+            <h3 className={stylesmodal["heading"]}>premium</h3>
+            <h1 className={stylesmodal["service__price"]}>
+              <sup className={stylesmodal["dollar__sign"]}>$7</sup>
+              <sup className={stylesmodal["service__period"]}>Per Month</sup>
+            </h1>
+            <ul className={stylesmodal["features__list"]}>
+              <li>Available Anytime</li>
+              <li>500 Queries</li>
+              <li>Unlimited Prompts</li>
+              <li>Priority Support</li>
+            </ul>
+            <button
+              className={stylesmodal["order__button"]}
+              onClick={() => {
+                pay("2");
+              }}
+            >
+              Get Started
+            </button>
+          </div>
+
+          <div className={stylesmodal["pricing__table"]}>
+            <div className={stylesmodal["icon type-03"]}>
+              <span
+                className={stylesmodal["fa fa-rocket"]}
+                aria-hidden="true"
+              ></span>
+            </div>
+            <h3 className={stylesmodal["heading"]}>Free Tier</h3>
+            <h1 className={stylesmodal["service__price"]}>
+              <sup className={stylesmodal["dollar__sign"]}>Free</sup>
+              <sup className={stylesmodal["service__period"]}>Per Day</sup>
+            </h1>
+            <ul className={stylesmodal["features__list"]}>
+              <li>Available Anytime</li>
+              <li>3 Queries</li>
+              <li>Unlimited Prompts</li>
+              <li>Priority Support</li>
+            </ul>
+            <button
+              className={stylesmodal["order__button"]}
+              onClick={() => {
+                orderfunction();
+              }}
+            >
+              Get Started
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <ToastContainer />
+    </div>
+  );
+}
+
 function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
@@ -684,21 +861,25 @@ function _Chat() {
   };
 
   const doSubmit = (userInput: string) => {
-    if (userInput.trim() === "") return;
-    const matchCommand = chatCommands.match(userInput);
-    if (matchCommand.matched) {
+    if (session.stat.charCount < 120) {
+      if (userInput.trim() === "") return;
+      const matchCommand = chatCommands.match(userInput);
+      if (matchCommand.matched) {
+        setUserInput("");
+        setPromptHints([]);
+        matchCommand.invoke();
+        return;
+      }
+      setIsLoading(true);
+      chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+      localStorage.setItem(LAST_INPUT_KEY, userInput);
       setUserInput("");
       setPromptHints([]);
-      matchCommand.invoke();
-      return;
+      if (!isMobileScreen) inputRef.current?.focus();
+      setAutoScroll(true);
+    } else {
+      setIsStripeSub(true);
     }
-    setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
-    localStorage.setItem(LAST_INPUT_KEY, userInput);
-    setUserInput("");
-    setPromptHints([]);
-    if (!isMobileScreen) inputRef.current?.focus();
-    setAutoScroll(true);
   };
 
   const onPromptSelect = (prompt: RenderPompt) => {
@@ -1012,6 +1193,7 @@ function _Chat() {
 
   // edit / insert message modal
   const [isEditingMessage, setIsEditingMessage] = useState(false);
+  const [isStripeSub, setIsStripeSub] = useState(false);
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -1269,6 +1451,14 @@ function _Chat() {
         <EditMessageModal
           onClose={() => {
             setIsEditingMessage(false);
+          }}
+        />
+      )}
+
+      {isStripeSub && (
+        <StripeSubModal
+          onClose={() => {
+            setIsStripeSub(false);
           }}
         />
       )}
