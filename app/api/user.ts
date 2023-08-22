@@ -25,6 +25,7 @@ export async function updateData(newData: any) {
   await dbConnect();
   const data = new User(newData);
   await User.updateOne(
+    { userEmail: data.userEmail },
     { userId: data.userId },
     { $set: { query: data.query } },
   );

@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema(
   {
     userId: { type: String, required: true },
+    userEmail: { type: String },
     query: { type: Number },
   },
   { timestamps: true },

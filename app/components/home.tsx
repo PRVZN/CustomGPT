@@ -30,7 +30,7 @@ import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
 
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -56,8 +56,6 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
-
-import User from "../model/user";
 
 export function useSwitchTheme() {
   const config = useAppConfig();
@@ -135,9 +133,14 @@ function Screen() {
 
   const { isLoaded, userId, sessionId, getToken } = useAuth();
 
+  const data = useUser();
+
+  const userEmail = data.user?.primaryEmailAddress?.emailAddress;
+
   const agentData = {
     userId,
     query,
+    userEmail,
   };
 
   useEffect(() => {
@@ -149,7 +152,12 @@ function Screen() {
     const newData = response.data;
   };
   useEffect(() => {
-    if (agentData && agentData.userId && agentData.query) {
+    if (
+      agentData &&
+      agentData.userId &&
+      agentData.query &&
+      agentData.userEmail
+    ) {
       fetchData();
     }
   }, [agentData]);

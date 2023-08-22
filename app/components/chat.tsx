@@ -91,6 +91,9 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import axios from "axios";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { useAuth } from "@clerk/nextjs";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
@@ -602,6 +605,10 @@ export function EditMessageModal(props: { onClose: () => void }) {
   );
 }
 
+function App(flag: any) {
+  return <div>{flag === "1" ? toast("Wow so easy!") : null}</div>;
+}
+
 export function StripeSubModal(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
@@ -643,6 +650,7 @@ export function StripeSubModal(props: { onClose: () => void }) {
         navigate(Path.NewChat);
       }
     } else {
+      App("1");
     }
   };
 
@@ -689,34 +697,10 @@ export function StripeSubModal(props: { onClose: () => void }) {
             </h1>
 
             <ul className={stylesmodal["features__list"]}>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                Available Anytime
-              </li>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                300 Queries
-              </li>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                Unlimited Prompts
-              </li>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-times"]}
-                  aria-hidden="true"
-                ></i>
-                Priority Support
-              </li>
+              <li>Available Anytime</li>
+              <li>300 Queries</li>
+              <li>Unlimited Prompts</li>
+              <li>Priority Support</li>
             </ul>
             <button
               className={stylesmodal["order__button"]}
@@ -741,31 +725,10 @@ export function StripeSubModal(props: { onClose: () => void }) {
               <sup className={stylesmodal["service__period"]}>Per Month</sup>
             </h1>
             <ul className={stylesmodal["features__list"]}>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                Available Anytime
-              </li>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                500 Queries
-              </li>
-              <li>
-                <i className="fa fa-check" aria-hidden="true"></i>
-                Unlimited Prompts
-              </li>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                Priority Support
-              </li>
+              <li>Available Anytime</li>
+              <li>500 Queries</li>
+              <li>Unlimited Prompts</li>
+              <li>Priority Support</li>
             </ul>
             <button
               className={stylesmodal["order__button"]}
@@ -790,34 +753,10 @@ export function StripeSubModal(props: { onClose: () => void }) {
               <sup className={stylesmodal["service__period"]}>Per Day</sup>
             </h1>
             <ul className={stylesmodal["features__list"]}>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                Available Anytime
-              </li>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                3 Queries
-              </li>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                Unlimited Prompts
-              </li>
-              <li>
-                <i
-                  className={stylesmodal["fa fa-check"]}
-                  aria-hidden="true"
-                ></i>
-                Priority Support
-              </li>
+              <li>Available Anytime</li>
+              <li>3 Queries</li>
+              <li>Unlimited Prompts</li>
+              <li>Priority Support</li>
             </ul>
             <button
               className={stylesmodal["order__button"]}
@@ -830,6 +769,8 @@ export function StripeSubModal(props: { onClose: () => void }) {
           </div>
         </div>
       </Modal>
+
+      <ToastContainer />
     </div>
   );
 }

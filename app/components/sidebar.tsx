@@ -33,6 +33,9 @@ import axios from "axios";
 import { useAuth } from "@clerk/nextjs";
 import { SignOutButton } from "@clerk/nextjs";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
@@ -104,6 +107,10 @@ function useDragSideBar() {
   };
 }
 
+function App(flag: any) {
+  return <div>{flag === "1" ? toast("Wow so easy!") : null}</div>;
+}
+
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
@@ -125,17 +132,9 @@ export function SideBar(props: { className?: string }) {
     // const data = await getData(userId);
     await newData.forEach((id: any) => {
       if (id.userId == userId) {
-        queryCount = id.query - 1;
+        queryCount = id.query;
       }
     });
-
-    const agentdata = {
-      userId,
-      query: queryCount,
-    };
-    await axios.post("/api/query", agentdata);
-
-    console.log("11111111111111", queryCount, userId);
 
     if (queryCount !== undefined && queryCount > 0) {
       if (config.dontShowMaskSplashScreen) {
@@ -145,9 +144,9 @@ export function SideBar(props: { className?: string }) {
         navigate(Path.NewChat);
       }
     } else {
+      App("1");
     }
   };
-
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${
@@ -245,6 +244,8 @@ export function SideBar(props: { className?: string }) {
       >
         <DragIcon />
       </div>
+
+      <ToastContainer />
     </div>
   );
 }

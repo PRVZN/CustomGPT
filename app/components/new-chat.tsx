@@ -16,6 +16,8 @@ import { MaskAvatar } from "./mask";
 import { useCommand } from "../command";
 import { showConfirm } from "./ui-lib";
 import { BUILTIN_MASK_STORE } from "../masks";
+import axios from "axios";
+import { useAuth } from "@clerk/nextjs";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
   const xmin = Math.max(aRect.x, bRect.x);
@@ -93,7 +95,27 @@ export function NewChat() {
 
   const { state } = useLocation();
 
-  const startChat = (mask?: Mask) => {
+  const { isLoaded, userId, sessionId, getToken } = useAuth();
+
+  const startChat = async (mask?: Mask) => {
+    const resdata = await axios.get("/api");
+    const newData = resdata.data.data;
+
+    let queryCount;
+
+    // const data = await getData(userId);
+    await newData.forEach((id: any) => {
+      if (id.userId == userId) {
+        queryCount = id.query - 1;
+      }
+    });
+
+    const agentdata = {
+      userId,
+      query: queryCount,
+    };
+    await axios.post("/api/query", agentdata);
+
     setTimeout(() => {
       chatStore.newSession(mask);
       navigate(Path.Chat);
