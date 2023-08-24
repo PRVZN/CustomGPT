@@ -110,9 +110,10 @@ function useDragSideBar() {
 }
 
 function App(flag: any) {
-  return <div>{flag === "1" ? toast("!") : null}</div>;
+  return (
+    <div>{flag === "1" ? toast("You are running low on tokens!") : null}</div>
+  );
 }
-
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
   const [flag, setFlag] = useState(false);
