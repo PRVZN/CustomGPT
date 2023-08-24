@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import styles from "./home.module.scss";
 
@@ -32,6 +32,8 @@ import { showConfirm, showToast } from "./ui-lib";
 import axios from "axios";
 import { useAuth } from "@clerk/nextjs";
 import { SignOutButton } from "@clerk/nextjs";
+
+import { StripeSubModal } from "./chat";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -108,11 +110,12 @@ function useDragSideBar() {
 }
 
 function App(flag: any) {
-  return <div>{flag === "1" ? toast("Wow so easy!") : null}</div>;
+  return <div>{flag === "1" ? toast("!") : null}</div>;
 }
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
+  const [flag, setFlag] = useState(false);
 
   // drag side bar
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
@@ -122,6 +125,8 @@ export function SideBar(props: { className?: string }) {
   useHotKey();
 
   const { isLoaded, userId, sessionId, getToken } = useAuth();
+
+  const [isStripeSub, setIsStripeSub] = useState(false);
 
   const orderfunction = async () => {
     const resdata = await axios.get("/api");
@@ -173,6 +178,12 @@ export function SideBar(props: { className?: string }) {
             shadow
           />
         </SignOutButton>
+        <IconButton
+          text={"Upgrade Plan"}
+          className={styles["sidebar-bar-button"]}
+          shadow
+          onClick={() => setIsStripeSub(true)}
+        />
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
@@ -246,6 +257,14 @@ export function SideBar(props: { className?: string }) {
       </div>
 
       <ToastContainer />
+
+      {isStripeSub && (
+        <StripeSubModal
+          onClose={() => {
+            setIsStripeSub(false);
+          }}
+        />
+      )}
     </div>
   );
 }

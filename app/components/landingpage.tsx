@@ -24,7 +24,9 @@ export default function LandingPage() {
                 <img src="./favicon.ico" />
                 <span>&nbsp;&nbsp;&nbsp;ChatGPT Next</span>
               </div>
-              <span className={styles["sign"]}>Log In →</span>
+              <span className={styles["sign"]} onClick={handleClick}>
+                Log In →
+              </span>
             </div>
             <div className={styles["body"]}>
               <div className={styles["body-01"]}>

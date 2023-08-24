@@ -17,7 +17,7 @@ import { useCommand } from "../command";
 import { showConfirm } from "./ui-lib";
 import { BUILTIN_MASK_STORE } from "../masks";
 import axios from "axios";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
   const xmin = Math.max(aRect.x, bRect.x);
@@ -95,7 +95,11 @@ export function NewChat() {
 
   const { state } = useLocation();
 
+  const data = useUser();
+
   const { isLoaded, userId, sessionId, getToken } = useAuth();
+
+  const userEmail = data.user?.primaryEmailAddress?.emailAddress;
 
   const startChat = async (mask?: Mask) => {
     const resdata = await axios.get("/api");
@@ -113,7 +117,9 @@ export function NewChat() {
     const agentdata = {
       userId,
       query: queryCount,
+      userEmail,
     };
+
     await axios.post("/api/query", agentdata);
 
     setTimeout(() => {
