@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./home.module.scss";
+import styles from "./landingpage.module.scss";
 
-import { useNavigate } from "react-router-dom";
 import { Home } from "./home";
 
 import { useAuth } from "@clerk/nextjs";
@@ -17,26 +16,31 @@ export default function LandingPage() {
   };
   return (
     <>
-      <div className={styles["container"]}>
+      <div className={styles["background"]}>
         {!isShow && !userId ? (
           <>
             <div className={styles["header"]}>
-              <span className={styles["logo"]}>ChatGPT</span>
-              <span className={styles["sign"]}>Log In </span>
+              <div className={styles["logo"]}>
+                <img src="./favicon.ico" />
+                <span>&nbsp;&nbsp;&nbsp;ChatGPT Next</span>
+              </div>
+              <span className={styles["sign"]}>Log In →</span>
             </div>
             <div className={styles["body"]}>
-              <button onClick={handleClick}>Get Started ChatGPT</button>
               <div className={styles["body-01"]}>
-                <span className={styles["text-@1"]}>
+                <span className={styles["text-01"]}>
                   {" "}
-                  Custom ChatGPT for your data
+                  <b>Custom ChatGPT for </b>
+                  <a className={styles["text-03"]}>your data</a>
                 </span>
                 <span className={styles["text-02"]}>
                   Just connect your data sources and get a ChatGPT-like chatbot
-                  for your data. Then add it as a widget to your website or chat
-                  with it through our integrations or API.
+                  for your data.
                 </span>
               </div>
+              <button className={styles["button"]} onClick={handleClick}>
+                Get Started
+              </button>
               <div className={styles["body-02"]}>
                 {" "}
                 <img src="./cover.png" />
