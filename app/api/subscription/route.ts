@@ -4,7 +4,7 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_CREDENTIAL);
 
 export async function POST(request: NextRequest) {
-  const { type } = await request.json();
+  const { type, email } = await request.json();
   let price;
 
   switch (type) {
@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
   }
 
   const session = await stripe.checkout.sessions.create({
+    customer_email: email,
     success_url: process.env.STRIPE_SUCCESS_URL,
     cancel_url: process.env.STRIPE_CANCEL_URL,
     line_items: [{ price: price, quantity: 1 }],
