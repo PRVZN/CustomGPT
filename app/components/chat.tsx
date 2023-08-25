@@ -659,7 +659,7 @@ export function StripeSubModal(props: { onClose: () => void }) {
   return (
     <div className="modal-mask">
       <Modal
-        title="Upgrade Plan"
+        title="Manage Subscription"
         onClose={props.onClose}
         actions={[
           <IconButton
@@ -699,10 +699,34 @@ export function StripeSubModal(props: { onClose: () => void }) {
             </h1>
 
             <ul className={stylesmodal["features__list"]}>
-              <li>Available Anytime</li>
-              <li>300 Queries</li>
-              <li>Unlimited Prompts</li>
-              <li>Priority Support</li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Available Anytime
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                300 Queries
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Unlimited Prompts
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Priority Support
+              </li>
             </ul>
             <button
               className={stylesmodal["order__button"]}
@@ -710,7 +734,7 @@ export function StripeSubModal(props: { onClose: () => void }) {
                 pay("1");
               }}
             >
-              Get Started
+              Upgrade
             </button>
           </div>
 
@@ -727,10 +751,37 @@ export function StripeSubModal(props: { onClose: () => void }) {
               <sup className={stylesmodal["service__period"]}>Per Month</sup>
             </h1>
             <ul className={stylesmodal["features__list"]}>
-              <li>Available Anytime</li>
-              <li>500 Queries</li>
-              <li>Unlimited Prompts</li>
-              <li>Priority Support</li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Available Anytime
+              </li>
+              <li>
+                {" "}
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                500 Queries
+              </li>
+              <li>
+                {" "}
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Unlimited Prompts
+              </li>
+              <li>
+                {" "}
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Priority Support
+              </li>
             </ul>
             <button
               className={stylesmodal["order__button"]}
@@ -738,7 +789,7 @@ export function StripeSubModal(props: { onClose: () => void }) {
                 pay("2");
               }}
             >
-              Get Started
+              Upgrade
             </button>
           </div>
 
@@ -755,10 +806,34 @@ export function StripeSubModal(props: { onClose: () => void }) {
               <sup className={stylesmodal["service__period"]}>Per Day</sup>
             </h1>
             <ul className={stylesmodal["features__list"]}>
-              <li>Available Anytime</li>
-              <li>3 Queries</li>
-              <li>Unlimited Prompts</li>
-              <li>Priority Support</li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Available Anytime
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                3 Queries
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Unlimited Prompts
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Priority Support
+              </li>
             </ul>
             <button
               className={stylesmodal["order__button"]}
@@ -766,7 +841,7 @@ export function StripeSubModal(props: { onClose: () => void }) {
                 orderfunction();
               }}
             >
-              Get Started
+              Upgrade
             </button>
           </div>
         </div>
