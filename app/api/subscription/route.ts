@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-const stripe = require("stripe")(
-  "sk_test_51MJtP8LKiBr2gm2NF9hZDSPk0W0F9VUPtKYeWZXBDO4f9CxU6FBjKvb3AyK1q6xQ0r5mv02dNxZujxknf275mauv00VWi1lSk2",
-);
+
+require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_CREDENTIAL);
 
 export async function POST(request: NextRequest) {
   const { type } = await request.json();
-  let price = "";
+  let price;
 
   switch (type) {
     case "1":
-      price = "price_1NhX1WLKiBr2gm2Nrk7uDEyG";
+      price = process.env.STRIPE_PRICE_1;
       break;
     case "2":
-      price = "price_1NhX1WLKiBr2gm2N1Oag9WLy";
+      price = process.env.STRIPE_PRICE_2;
       break;
 
     default:
@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
   }
 
   const session = await stripe.checkout.sessions.create({
-    success_url: "https://example.com/success",
-    cancel_url: "http://localhost:3000",
+    success_url: process.env.STRIPE_SUCCESS_URL,
+    cancel_url: process.env.STRIPE_CANCEL_URL,
     line_items: [{ price: price, quantity: 1 }],
     mode: "subscription",
   });
