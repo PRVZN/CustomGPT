@@ -7,8 +7,6 @@ const stripe = require("stripe")(
 export async function POST(request: NextRequest) {
   const data = await request.json();
 
-  console.log("1111111111111", data);
-
   switch (data.type) {
     case "invoice.payment_succeeded":
       const amount = data.data.object.amount_paid;

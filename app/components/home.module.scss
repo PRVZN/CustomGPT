@@ -8,6 +8,7 @@
   min-width: 600px;
   min-height: 480px;
   max-width: 1200px;
+  margin: auto;
 
   display: flex;
   overflow: hidden;
@@ -134,6 +135,9 @@
 }
 
 .sidebar-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   position: relative;
   padding-top: 20px;
   padding-bottom: 20px;

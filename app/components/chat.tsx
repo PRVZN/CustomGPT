@@ -606,7 +606,9 @@ export function EditMessageModal(props: { onClose: () => void }) {
 }
 
 function App(flag: any) {
-  return <div>{flag === "1" ? toast("Wow so easy!") : null}</div>;
+  return (
+    <div>{flag === "1" ? toast("You are running low on tokens!") : null}</div>
+  );
 }
 
 export function StripeSubModal(props: { onClose: () => void }) {
