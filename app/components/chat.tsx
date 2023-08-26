@@ -615,14 +615,67 @@ export function StripeSubModal(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const [messages, setMessages] = useState(session.messages.slice());
+  const [userData, setUserData] = useState({
+    userId: "",
+    amount: 0,
+    subscription_id: "",
+    customer: "",
+    userEmail: "",
+  });
+
+  const initeUserdata = async () => {
+    const response = await axios.get("/api");
+    const newData = response.data.data;
+
+    let queryCount;
+    // const data = await getData(userId);
+    await newData.forEach((id: any) => {
+      if (id.userId == userId) {
+        queryCount = id.query;
+        setUserData(id);
+      }
+    });
+  };
+
+  useEffect(() => {
+    initeUserdata();
+  }, []);
 
   const pay = (type: any) => {
-    axios
-      .post("/api/subscription", { type: type })
-      .then((res) => {
-        return (window.location = res.data.data);
-      })
-      .catch((err) => {});
+    if (type == "2") {
+      if (userData.amount == 500) {
+        axios
+          .post("/api/downgrade", { subscription_id: userData.subscription_id })
+          .then((res) => {
+            axios
+              .post("/api/subscription", {
+                type: type,
+                email: userData.userEmail,
+              })
+              .then((res) => {
+                return (window.location = res.data.data);
+              })
+              .catch((err) => {});
+          })
+          .catch((err) => {
+            alert("");
+          });
+      } else {
+        axios
+          .post("/api/subscription", { type: type, email: userData.userEmail })
+          .then((res) => {
+            return (window.location = res.data.data);
+          })
+          .catch((err) => {});
+      }
+    } else {
+      axios
+        .post("/api/subscription", { type: type, email: userData.userEmail })
+        .then((res) => {
+          return (window.location = res.data.data);
+        })
+        .catch((err) => {});
+    }
   };
 
   const navigate = useNavigate();
@@ -636,11 +689,11 @@ export function StripeSubModal(props: { onClose: () => void }) {
     const newData = response.data.data;
 
     let queryCount;
-
     // const data = await getData(userId);
     await newData.forEach((id: any) => {
       if (id.userId == userId) {
         queryCount = id.query;
+        setUserData(id);
       }
     });
 
@@ -656,10 +709,33 @@ export function StripeSubModal(props: { onClose: () => void }) {
     }
   };
 
+  const downGrade = async (type: any) => {
+    if (type == 1) {
+      if (userData)
+        axios
+          .post("api/downgrade", { subscription_id: userData.subscription_id })
+          .then((res) => {
+            pay("1");
+          })
+          .catch((err) => {
+            alert("");
+          });
+    } else {
+      axios
+        .post("api/downgrade", { subscription_id: userData.subscription_id })
+        .then((res) => {
+          alert("success");
+        })
+        .catch((err) => {
+          alert("");
+        });
+    }
+  };
+
   return (
     <div className="modal-mask">
       <Modal
-        title="Upgrade Plan"
+        title="Manage Subscription"
         onClose={props.onClose}
         actions={[
           <IconButton
@@ -699,19 +775,62 @@ export function StripeSubModal(props: { onClose: () => void }) {
             </h1>
 
             <ul className={stylesmodal["features__list"]}>
-              <li>Available Anytime</li>
-              <li>300 Queries</li>
-              <li>Unlimited Prompts</li>
-              <li>Priority Support</li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Available Anytime
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                300 Queries
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Unlimited Prompts
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Priority Support
+              </li>
             </ul>
-            <button
-              className={stylesmodal["order__button"]}
-              onClick={() => {
-                pay("1");
-              }}
-            >
-              Get Started
-            </button>
+            {userData ? (
+              userData["amount"] > 500 ? (
+                <button
+                  className={stylesmodal["order__button"]}
+                  onClick={() => {
+                    downGrade(1);
+                  }}
+                >
+                  Downgrade
+                </button>
+              ) : userData["amount"] == 500 ? (
+                <button className={stylesmodal["order__button"]}>
+                  Current Plan
+                </button>
+              ) : (
+                <button
+                  className={stylesmodal["order__button"]}
+                  onClick={() => {
+                    pay("1");
+                  }}
+                >
+                  Upgrade
+                </button>
+              )
+            ) : (
+              ""
+            )}
           </div>
 
           <div className={stylesmodal["pricing__table"]}>
@@ -727,19 +846,56 @@ export function StripeSubModal(props: { onClose: () => void }) {
               <sup className={stylesmodal["service__period"]}>Per Month</sup>
             </h1>
             <ul className={stylesmodal["features__list"]}>
-              <li>Available Anytime</li>
-              <li>500 Queries</li>
-              <li>Unlimited Prompts</li>
-              <li>Priority Support</li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Available Anytime
+              </li>
+              <li>
+                {" "}
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                500 Queries
+              </li>
+              <li>
+                {" "}
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Unlimited Prompts
+              </li>
+              <li>
+                {" "}
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Priority Support
+              </li>
             </ul>
-            <button
-              className={stylesmodal["order__button"]}
-              onClick={() => {
-                pay("2");
-              }}
-            >
-              Get Started
-            </button>
+            {userData ? (
+              userData["amount"] == 700 ? (
+                <button className={stylesmodal["order__button"]}>
+                  Current Plan
+                </button>
+              ) : (
+                <button
+                  className={stylesmodal["order__button"]}
+                  onClick={() => {
+                    pay("2");
+                  }}
+                >
+                  Upgrade
+                </button>
+              )
+            ) : (
+              ""
+            )}
           </div>
 
           <div className={stylesmodal["pricing__table"]}>
@@ -755,19 +911,58 @@ export function StripeSubModal(props: { onClose: () => void }) {
               <sup className={stylesmodal["service__period"]}>Per Day</sup>
             </h1>
             <ul className={stylesmodal["features__list"]}>
-              <li>Available Anytime</li>
-              <li>3 Queries</li>
-              <li>Unlimited Prompts</li>
-              <li>Priority Support</li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Available Anytime
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                3 Queries
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Unlimited Prompts
+              </li>
+              <li>
+                <img
+                  src="./icons8-check-48.png"
+                  className={stylesmodal["check"]}
+                ></img>
+                Priority Support
+              </li>
             </ul>
-            <button
-              className={stylesmodal["order__button"]}
-              onClick={() => {
-                orderfunction();
-              }}
-            >
-              Get Started
-            </button>
+            {userData ? (
+              userData["amount"] ? (
+                <button
+                  className={stylesmodal["order__button"]}
+                  onClick={() => {
+                    downGrade(0);
+                  }}
+                >
+                  Downgrade
+                </button>
+              ) : (
+                <button
+                  className={stylesmodal["order__button"]}
+                  onClick={() => {
+                    orderfunction();
+                  }}
+                >
+                  Upgrade
+                </button>
+              )
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </Modal>

@@ -180,7 +180,7 @@ export function SideBar(props: { className?: string }) {
           />
         </SignOutButton>
         <IconButton
-          text={"Upgrade Plan"}
+          text={"Manage Subscription"}
           className={styles["sidebar-bar-button"]}
           shadow
           onClick={() => setIsStripeSub(true)}
